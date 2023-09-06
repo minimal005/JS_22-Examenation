@@ -105,7 +105,7 @@ console.log(recursionPalindrom('racecar'));
 // 6. Напишіть функцію, яка змінює колір фону сторінки через 5 секунд після завантаження документа.
 
 const newColor = () => {
-    document.body.style.background = `rgb(${getRandom (0, 255)}, ${getRandom (0, 255)}, ${getRandom (0, 255)})`
+    document.body.style.background = `rgb(${getRandom (100, 255)}, ${getRandom (100, 255)}, ${getRandom (100, 255)})`
 }
 setTimeout(newColor, 5000);
 
@@ -116,6 +116,8 @@ const newNumber = () => {
     const element = document.createElement('span')
     document.body.prepend(element)
     setInterval(() => {
+        //задамо рандомний колір з більш темніших тонів
+        element.style.color = `rgb(${getRandom (0, 160)}, ${getRandom (0, 160)}, ${getRandom (0, 160)})`
         element.textContent = `${getRandom (0, 100)}`
        
     }, 3000);
@@ -133,7 +135,7 @@ const nowTime = () => {
     const second = document.createElement('span')
     const time = [hour, minute, second]
 
-        alltime.innerHTML = `Актуальний час:\n`
+        alltime.innerHTML = `Актуальний час: `
 
         alltime.append(hour)  
         alltime.append(minute)
@@ -148,7 +150,7 @@ const nowTime = () => {
         second.textContent = newClock.getSeconds()
 
         for (let elem of time){
-            correctTime(elem)
+            correctTime(elem) 
          }
     }
 // корректне відображення часу
@@ -171,13 +173,77 @@ nowTime()
 // • Перегляд розкладу на певний день тижня
 
 class Scedule {
-        allScedule = []
+        
     constructor(name, day, beginTime, duringTime){
         this.name = name
         this.day = day
         this.beginTime = beginTime
         this.duringTime = duringTime
+        this.allScedule = [,[],[],[],[],[],[],[]]
+        this.week = ['понеділок', 'вівторок', 'середа', 'четвер', 'пятниця', 'субота', 'неділя']
     }
-    setLesson (lesson)
+    // • дані по заняттю задаємо масивом [назва предмета, день тижня (числом), початковий час заняття, тривалість заняття]
+    addLesson(lesson){
+        this.allScedule[lesson[1]].push([lesson[2], lesson[3], lesson[0]])
+        return this.allScedule
+    }
+    // • дані для видалення задаємо масивом [назва предмета, день тижня, початковий час заняття]
+    removeLesson(lesson){
+        for(let i = 0; i < this.allScedule[lesson[1]].length; i++){
+            if (this.allScedule[lesson[1]][i][0] == lesson[2] && this.allScedule[lesson[1]][i][2] == lesson[0]){
+                   this.allScedule[lesson[1]].splice(i,1)
+            }
+        }
+        return this.allScedule[lesson[1]]
+    }
+    
+    add(){
+        this.allScedule[this.day].push([this.beginTime, this.duringTime, this.name])
+        return this.allScedule
+    }
 
+    // • Перегляд розкладу на певний день тижня
+    showCorrect(numDay){
+
+        //перевірка, чи при створенні екземпляра не продублювався предмет
+        let audit = true 
+        for(let i = 0; i < this.allScedule[numDay].length; i++){
+            if (this.allScedule[numDay][i][0] == this.beginTime && this.allScedule[numDay][i][2] == this.name){
+                  audit = false
+            }  
+        }
+       if (audit != false) this.add() 
+        
+        //сортування занять по часу початку уроку
+        this.allScedule[numDay].sort((a,b) => {
+           return (+a[0].split(':').join('') - +b[0].split(':').join(''))
+        })
+
+        let showCorrectScedule = this.allScedule[numDay].reduce((accum, item) => {
+            accum += `${item[0]} | ${item[1]} | ${item[2]}\n`
+            return accum
+        },'')
+
+        return showCorrectScedule
+    }
 }
+
+// const schoolScedule = new Scedule('українська мова', 2, '9:00', '45 хв')
+// console.log(schoolScedule.addLesson(['українська література', 2, '10:30', '45 хв']))
+// console.log(schoolScedule.addLesson(['хімія', 2, '14:00', '45 хв']))
+// console.log(schoolScedule.addLesson(['фізика', 2, '12:00', '45 хв']))
+// console.log(schoolScedule.showCorrect(2))
+// console.log(schoolScedule.removeLesson(['фізика', 2, '12:00']))
+// console.log(schoolScedule.showCorrect(2))
+// console.log(schoolScedule.showCorrect(2))
+
+
+
+// 10. Створіть клас "Автобусна компанія", який містить наступні властивості:
+// • Назва компанії
+// • Масив автобусів (початково пустий) 
+// Клас повинен мати методи:
+// • Додавання нового автобуса до компанії
+// • Видалення автобуса з компанії
+// • Перегляд списку всіх автобусів компанії
+// • Перегляд списку автобусів, які доступні для бронювання на певний день та час
