@@ -478,18 +478,77 @@ console.log(newEmployee.getAnnualSalary());
 
 class Cart {
     constructor(){
-        this.items = items
+        this.items = [{}]
     }
     addItem(product, quantity){
-
+        for(let elem in this.items){
+            if (elem == product) return this.items[product] += quantity
+        }
+        return this.items[product] = quantity
     }
     removeItem(product){
-
+        for(let elem in this.items){
+            if (elem == product) return delete this.items[elem]
+        }
+    }
+    
+    clear(){
+        return this.items = {}
     }
     getTotalPrice(){
-
-    }
-    clear(){
         
+        let sum = 0
+        for(let elem in this.items){
+            sum += this.items[elem] * this.price
+        }
+        return `Загальна вартість продуктів ${sum}`
     }
 }
+
+class Product  {
+    constructor(name, price){
+        this.name = name
+        this.price = price
+    }
+    
+}
+
+const milk = new Product('milk', 36)
+const butter = new Product('butter', 275)
+const bread = new Product('bread', 20)
+const bear = new Product('bear', 46)
+
+milk.addItem(milk, 2)
+milk.addItem(bread, 3)
+milk.addItem(bear, 1)
+milk.addItem(bear, 4)
+milk.removeItem(bread)
+console.log(Cart.items);
+
+
+
+
+
+// 16. Створіть клас Car з наступними властивостями: make, model, year, color, mileage, price та методом getAge(). Метод getAge() повинен повертати кількість років, які пройшли з моменту випуску машини. Створіть екземпляр класу та викличте метод getAge() з цього екземпляру
+
+
+class Car {
+    constructor(make, model, year, color, mileage, price) {
+        this.make = make
+        this.model = model
+        this.year = year
+        this.color = color
+        this.mileage = mileage
+        this.price = price
+    }
+    getInfo(){
+        return `Ви маєте машину ${this.model}. Країна виробник ${this.make}. Колір машини ${this.color}. Вартість ${this.price} грн.`
+    }
+    getAge(){
+        let nowDate = new Date()
+        return `Вік Вашої машини ${nowDate.getFullYear() - this.year} років`
+    }
+}
+const audi = new Car ('Germany', 'Audi', 1987, 'blue', 18000, 90000)
+console.log(audi.getInfo());
+console.log(audi.getAge());
