@@ -477,40 +477,50 @@ console.log(newEmployee.getAnnualSalary());
 // 15. Створіть клас Cart, який має властивість items, яка містить список продуктів (екземплярів класу Product) та методи addItem(product, quantity), removeItem(product),  getTotalPrice() та clear(). Метод addItem додає продукт у кошик з певною кількістю, метод removeItem видаляє продукт з кошика, метод getTotalPrice повертає загальну вартість всіх  продуктів у кошику, а метод clear очищає кошик.
 
 class Cart {
-    constructor(){
-        this.items = [{}]
-    }
+    static items = []
+
     addItem(product, quantity){
-        for(let elem in this.items){
-            if (elem == product) return this.items[product] += quantity
+        // перевірка, якщо є, то оновлюється кількість
+        for (let elem of Cart.items){
+            if (elem.name == product.name) {
+                elem.quantity += quantity
+                return Cart.items
+            }
         }
-        return this.items[product] = quantity
+        product.quantity = quantity
+        Cart.items.push(product)
+        return Cart.items
     }
     removeItem(product){
-        for(let elem in this.items){
-            if (elem == product) return delete this.items[elem]
+        let newArrProduct = []
+        for(let index = 0; index < Cart.items.length; index++){
+            if (Cart.items[index].name == product.name) {
+                continue
+            } else newArrProduct.push(Cart.items[index])
+            
         }
+        Cart.items = [...newArrProduct]
+        return Cart.items
     }
     
-    clear(){
-        return this.items = {}
+    static clear(){
+        return Cart.items = []
     }
-    getTotalPrice(){
-        
+    static getTotalPrice(){
         let sum = 0
-        for(let elem in this.items){
-            sum += this.items[elem] * this.price
+        for(let elem in Cart.items){
+            sum += Cart.items[elem].quantity * Cart.items[elem].price
         }
-        return `Загальна вартість продуктів ${sum}`
+        return `Загальна вартість продуктів ${sum} грн`
     }
 }
 
-class Product  {
+class Product extends Cart {
     constructor(name, price){
+        super()
         this.name = name
         this.price = price
     }
-    
 }
 
 const milk = new Product('milk', 36)
@@ -519,13 +529,16 @@ const bread = new Product('bread', 20)
 const bear = new Product('bear', 46)
 
 milk.addItem(milk, 2)
-milk.addItem(bread, 3)
-milk.addItem(bear, 1)
-milk.addItem(bear, 4)
-milk.removeItem(bread)
-console.log(Cart.items);
-
-
+bread.addItem(bread, 3)
+butter.addItem(butter,1)
+bear.addItem(bear, 1)
+bear.addItem(bear, 4)
+console.log(Cart.items); //весь список продуктів після додавання
+bread.removeItem(bread)
+console.log(Cart.items); // після видалення хлібу зі списку
+console.log(Cart.getTotalPrice());
+Cart.clear() 
+console.log(Cart.items); // після очищення корзини 
 
 
 
@@ -550,5 +563,5 @@ class Car {
     }
 }
 const audi = new Car ('Germany', 'Audi', 1987, 'blue', 18000, 90000)
-console.log(audi.getInfo());
-console.log(audi.getAge());
+// console.log(audi.getInfo());
+// console.log(audi.getAge());
