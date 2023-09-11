@@ -159,7 +159,7 @@ const nowTime = () => {
     function correctTime(arg){
         if (arg.textContent < 10) arg.textContent = `0${arg.textContent}`
     }
-    setInterval(getTime, 300)
+    setInterval(getTime, 1000)
 }
 nowTime()
 
